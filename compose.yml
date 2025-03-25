@@ -1,0 +1,35 @@
+services:
+  mongo:
+    image: mongo:4.0
+    container_name: overleaf-mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  redis:
+    image: redis:latest
+    container_name: overleaf-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  overleaf:
+    image: melashri/overleaf
+    container_name: overleaf
+    restart: always
+    ports:
+      - "80:80"
+    environment:
+      - SHARELATEX_MONGO_HOST=mongo
+      - SHARELATEX_REDIS_HOST=redis
+    depends_on:
+      - mongo
+      - redis
+
+volumes:
+  mongo_data:
+  redis_data:
